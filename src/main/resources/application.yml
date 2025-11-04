@@ -1,0 +1,16 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/activit-demo?characterEncoding=utf8mb4&useSSL=false
+    username: root
+    password: rootpass
+
+
+activiti:
+  database-schema-update: true
+
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.chenbitao.activit_in_action.model
