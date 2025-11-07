@@ -3,11 +3,7 @@ package com.chenbitao.activiti_in_action;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -55,23 +51,22 @@ public class OnboardingRequest {
         while (processInstance != null && !processInstance.isEnded()) {
             List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("managers").list();
             System.out.println("Active outstanding tasks: [" + tasks.size() + "]");
-            for (int i = 0; i < tasks.size(); i++) {
-                Task task = tasks.get(i);
+            for (Task task : tasks) {
                 System.out.println("Processing Task [" + task.getName() + "]");
-                Map<String, Object> variables = new HashMap<String, Object>();
+                Map<String, Object> variables = new HashMap<>();
                 FormData formData = formService.getTaskFormData(task.getId());
                 for (FormProperty formProperty : formData.getFormProperties()) {
-                    if (StringFormType.class.isInstance(formProperty.getType())) {
+                    if (formProperty.getType() instanceof StringFormType) {
                         System.out.println(formProperty.getName() + "?");
                         String value = scanner.nextLine();
                         variables.put(formProperty.getId(), value);
-                    } else if (LongFormType.class.isInstance(formProperty.getType())) {
+                    } else if (formProperty.getType() instanceof LongFormType) {
                         System.out.println(formProperty.getName() + "? (Must be a whole number)");
                         Long value = Long.valueOf(scanner.nextLine());
                         variables.put(formProperty.getId(), value);
-                    } else if (DateFormType.class.isInstance(formProperty.getType())) {
-                        System.out.println(formProperty.getName() + "? (Must be a date m/d/yy)");
-                        DateFormat dateFormat = new SimpleDateFormat("m/d/yy");
+                    } else if (formProperty.getType() instanceof DateFormType) {
+                        System.out.println(formProperty.getName() + "? (Must be a date M/d/yy)");
+                        DateFormat dateFormat = new SimpleDateFormat("M/d/yy");
                         Date value = dateFormat.parse(scanner.nextLine());
                         variables.put(formProperty.getId(), value);
                     } else {
@@ -83,10 +78,10 @@ public class OnboardingRequest {
                 HistoricActivityInstance endActivity = null;
                 List<HistoricActivityInstance> activities = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).finished().orderByHistoricActivityInstanceEndTime().asc().list();
                 for (HistoricActivityInstance activity : activities) {
-                    if (activity.getActivityType() == "startEvent") {
+                    if (Objects.equals(activity.getActivityType(), "startEvent")) {
                         System.out.println("BEGIN " + processDefinition.getName() + " [" + processInstance.getProcessDefinitionKey() + "] " + activity.getStartTime());
                     }
-                    if (activity.getActivityType() == "endEvent") {
+                    if (Objects.equals(activity.getActivityType(), "endEvent")) {
                         // Handle edge case where end step happens so fast that the end step
                         // and previous step(s) are sorted the same. So, cache the end step
                         //and display it last to represent the logical sequence.
