@@ -79,7 +79,7 @@ public class OnboardingRequest {
                 List<HistoricActivityInstance> activities = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).finished().orderByHistoricActivityInstanceEndTime().asc().list();
                 for (HistoricActivityInstance activity : activities) {
                     if (Objects.equals(activity.getActivityType(), "startEvent")) {
-                        System.out.println("BEGIN " + processDefinition.getName() + " [" + processInstance.getProcessDefinitionKey() + "] " + activity.getStartTime());
+                        System.out.println("开始 " + processDefinition.getName() + " [" + processInstance.getProcessDefinitionKey() + "] " + activity.getStartTime());
                     }
                     if (Objects.equals(activity.getActivityType(), "endEvent")) {
                         // Handle edge case where end step happens so fast that the end step
