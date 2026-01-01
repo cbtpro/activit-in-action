@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
   <process id="onboarding" name="引导流程" isExecutable="true">
+    <documentation>引导流程</documentation>
     <startEvent id="startOnboarding" name="开始" activiti:initiator="initiator"/>
     <userTask id="enterOnboardingData" name="申请人" activiti:assignee="${initiator}" activiti:candidateGroups="managers">
       <extensionElements>
@@ -23,7 +24,11 @@
     <sequenceFlow id="personalizedIntroPath" name="经验大于3年" sourceRef="decision" targetRef="personalizedIntro">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${yearsOfExperience > 3}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="sid-BA6F061B-47B6-428B-8CE6-739244B14BD6" sourceRef="personalizedIntro" targetRef="endOnboarding"/>
+    <sequenceFlow id="sid-BA6F061B-47B6-428B-8CE6-739244B14BD6" sourceRef="personalizedIntro" targetRef="endOnboarding">
+      <extensionElements>
+        <activiti:executionListener class="Class 1"/>
+      </extensionElements>
+    </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_onboarding">
     <bpmndi:BPMNPlane bpmnElement="onboarding" id="BPMNPlane_onboarding">
@@ -46,9 +51,9 @@
         <omgdc:Bounds height="80.0" width="100.0" x="520.0" y="255.0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="sid-37A73ACA-2E23-400B-96F3-71F77738DAFA" id="BPMNEdge_sid-37A73ACA-2E23-400B-96F3-71F77738DAFA">
-        <omgdi:waypoint x="570.0" y="255.0"/>
-        <omgdi:waypoint x="570.0" y="179.0"/>
-        <omgdi:waypoint x="725.0" y="179.0"/>
+        <omgdi:waypoint x="619.99994" y="295.0"/>
+        <omgdi:waypoint x="739.00006" y="295.0"/>
+        <omgdi:waypoint x="739.00006" y="193.0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="sid-1337EA98-7364-4198-B5D9-30F5341D6918" id="BPMNEdge_sid-1337EA98-7364-4198-B5D9-30F5341D6918">
         <omgdi:waypoint x="185.0" y="160.0"/>

@@ -3,3 +3,7 @@
 ## doc
 
 https://www.activiti.org/quick-start
+
+## frontend
+
+https://github.com/cbtpro/activit-in-action-client
