@@ -1,0 +1,18 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/activiti_demo?characterEncoding=utf8mb4&useSSL=false
+    username: activiti_demo
+    password: activiti_demo
+
+# Activiti 配置
+activiti:
+  check-process-definitions: true # 自动部署流程定义文件
+  database-schema-update: true    # 启动时自动创建 25 张 Activity 表
+  history-level: audit            # 历史记录级别
+
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.chenbitao.activit_in_action.model

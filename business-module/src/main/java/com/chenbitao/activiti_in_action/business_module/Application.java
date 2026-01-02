@@ -1,4 +1,4 @@
-package com.chenbitao.activiti_in_action;
+package com.chenbitao.activiti_in_action.business_module;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

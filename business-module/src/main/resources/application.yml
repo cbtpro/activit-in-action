@@ -1,0 +1,46 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/activiti_in_action?characterEncoding=utf8&useSSL=false
+    username: activiti_in_action
+    password: activiti_in_action
+
+---
+# Activiti 相关配置
+spring:
+  activiti:
+    # 自动检查并更新数据库表结构（第一次运行会自动创建25张表）
+    database-schema-update: true
+    # 历史记录级别
+    history-level: audit
+    # 自动部署流程定义文件的目录
+    process-definition-location-prefix: classpath:/processes/
+
+# MyBatis Plus 配置
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
+  type-aliases-package: com.chenbitao.business.entity
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+#  type-aliases-package: com.chenbitao.activit_in_action.model
+---
+# 开启详细日志打印
+logging:
+  level:
+    root: INFO
+    # 打印 Spring 事务管理日志
+    org.springframework.jdbc.datasource: DEBUG
+    # 打印 Activiti 引擎执行过程
+    org.activiti: DEBUG
+    # 打印 MyBatis 执行的 SQL 语句
+    com.chenbitao: DEBUG
+    org.mybatis: DEBUG
+---
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - org.activiti.spring.boot.SecurityAutoConfiguration
