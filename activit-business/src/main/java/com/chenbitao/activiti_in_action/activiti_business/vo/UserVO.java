@@ -15,6 +15,7 @@ public class UserVO implements Serializable {
     @Sensitive(type = MaskType.NAME)
     private String name;
 
+    @Sensitive(type = MaskType.AGE)
     private Integer age;
 
     @Sensitive(type = MaskType.EMAIL)

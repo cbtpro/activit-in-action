@@ -11,54 +11,72 @@ import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 
 import java.io.IOException;
 
-public class SensitiveSerializer extends JsonSerializer<String> implements ContextualSerializer {
+public class SensitiveSerializer extends JsonSerializer<Object> implements ContextualSerializer {
 
     private MaskType type;
+    private int prefix;
+    private int suffix;
 
     // 必须保留无参构造函数
     public SensitiveSerializer() {
     }
 
-    public SensitiveSerializer(MaskType type) {
+    public SensitiveSerializer(MaskType type, int prefix, int suffix) {
         this.type = type;
+        this.prefix = prefix;
+        this.suffix = suffix;
     }
 
     @Override
-    public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+    public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         if (value == null) {
             gen.writeNull();
             return;
         }
 
-        // 执行脱敏逻辑
+        // 统一转换为字符串处理脱敏逻辑
+        String originValue = String.valueOf(value);
+
         switch (type) {
             case USERNAME:
-                gen.writeString(mask(value, 1, 1));
-                break;
             case NAME:
-                gen.writeString(mask(value, 1, 0));
+                gen.writeString(mask(originValue, prefix, suffix));
                 break;
             case EMAIL:
-                gen.writeString(value.replaceAll("(^.{2})[^@]+(@.*$)", "$1****$2"));
+                gen.writeString(originValue.replaceAll("(^.{2})[^@]+(@.*$)", "$1****$2"));
+                break;
+            case AGE:
+                // 特殊处理数字类型的年龄
+                processAgeMask(value, gen);
                 break;
             default:
-                gen.writeString(value);
+                gen.writeObject(value);
+        }
+    }
+
+    private void processAgeMask(Object value, JsonGenerator gen) throws IOException {
+        try {
+            int age = Integer.parseInt(String.valueOf(value));
+            if (age < 10) {
+                gen.writeString("10岁以下");
+            } else {
+                gen.writeString((age / 10 * 10) + "+");
+            }
+        } catch (Exception e) {
+            gen.writeObject(value); // 转换失败则原样输出
         }
     }
 
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
         if (property != null) {
-            // 判断当前处理的是否是 String 类型
-            if (property.getType().getRawClass().equals(String.class)) {
-                Sensitive annotation = property.getAnnotation(Sensitive.class);
-                if (annotation != null) {
-                    return new SensitiveSerializer(annotation.type());
-                }
+            Sensitive annotation = property.getAnnotation(Sensitive.class);
+            if (annotation != null) {
+                return new SensitiveSerializer(annotation.type(), annotation.prefix(), annotation.suffix());
             }
         }
-        // 如果没有注解，直接获取 Jackson 预置的标准 String 序列化器，不再寻找自定义的
-        return prov.findValueSerializer(String.class, property);
+        // 如果没有注解，根据实际类型寻找对应的默认序列化器
+        return prov.findValueSerializer(property.getType(), property);
     }
 
     private String mask(String s, int prefix, int suffix) {
