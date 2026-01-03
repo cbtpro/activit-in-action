@@ -1,4 +1,4 @@
-package com.chenbitao.activiti_in_action.business_module.controller;
+package com.chenbitao.activiti_in_action.activiti_business.controller;
 
 
 import org.springframework.web.bind.annotation.GetMapping;

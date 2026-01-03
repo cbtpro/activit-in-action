@@ -1,4 +1,4 @@
-package com.chenbitao.activiti_in_action.business_module.mapper;
+package com.chenbitao.activiti_in_action.activiti_business.mapper;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

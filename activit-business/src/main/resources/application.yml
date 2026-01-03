@@ -1,11 +1,27 @@
 server:
   port: 8082
 spring:
+#  config:
+#    import:
+#      - classpath:application-workflow.yml # 如果你在 workflow 模块定义了单独的 yml
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/activiti_in_action?characterEncoding=utf8&useSSL=false
-    username: activiti_in_action
-    password: activiti_in_action
+    # 1. 业务数据库 (默认数据源)
+    biz:
+      jdbc-url: jdbc:mysql://localhost:3306/activiti_business?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+      username: activiti_business
+      password: activiti_business
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+---
+spring:
+  activiti:
+    datasource:
+      # 2. 流程数据库
+      workflow:
+        jdbc-url: jdbc:mysql://localhost:3306/activiti_workflow?characterEncoding=utf8&useSSL=false
+        username: activiti_workflow
+        password: activiti_workflow
+        driver-class-name: com.mysql.cj.jdbc.Driver
 
 ---
 # Activiti 相关配置
@@ -44,3 +60,4 @@ spring:
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
       - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
       - org.activiti.spring.boot.SecurityAutoConfiguration
+      - org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration
