@@ -1,0 +1,38 @@
+package com.chenbitao.activiti_in_action.activiti_business.service;
+
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.chenbitao.activiti_in_action.activiti_business.domain.base.BaseEntity;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+
+@Service
+public class BaseService<T extends BaseEntity<?>> {
+
+    private BaseMapper<T> baseMapper;
+
+    // 无参构造器
+    public BaseService() {
+    }
+
+    public BaseService(BaseMapper<T> baseMapper) {
+        this.baseMapper = baseMapper;
+    }
+
+    public boolean logicDeleteById(Long id) {
+        T entity = baseMapper.selectById(id);
+        if (entity == null) {
+            return false;
+        }
+        entity.setDeletedBy(getCurrentUsername());
+        entity.setDeletedTime(LocalDateTime.now());
+        entity.setDeleted(1);
+        return baseMapper.updateById(entity) > 0;
+    }
+
+    private String getCurrentUsername() {
+        // 从上下文或 Security 获取当前登录用户
+        return "system";
+    }
+}
+

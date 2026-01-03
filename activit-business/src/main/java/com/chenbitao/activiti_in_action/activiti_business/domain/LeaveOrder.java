@@ -1,13 +1,16 @@
-package com.chenbitao.activiti_in_action.activiti_business.mapper;
+package com.chenbitao.activiti_in_action.activiti_business.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.chenbitao.activiti_in_action.activiti_business.domain.base.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-@TableName("biz_leave")
-public class LeaveOrder {
+@EqualsAndHashCode(callSuper = true)
+@TableName("`t_biz_leave`")
+public class LeaveOrder extends BaseEntity<Long> {
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
     private String userName;

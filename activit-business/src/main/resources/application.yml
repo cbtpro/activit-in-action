@@ -1,31 +1,17 @@
 server:
   port: 8082
 spring:
+  profiles:
+    active: dev
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+      - org.activiti.spring.boot.SecurityAutoConfiguration
+      - org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration
 #  config:
 #    import:
 #      - classpath:application-workflow.yml # 如果你在 workflow 模块定义了单独的 yml
-  datasource:
-    # 1. 业务数据库 (默认数据源)
-    biz:
-      jdbc-url: jdbc:mysql://localhost:3306/activiti_business?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-      username: activiti_business
-      password: activiti_business
-      driver-class-name: com.mysql.cj.jdbc.Driver
-
----
-spring:
-  activiti:
-    datasource:
-      # 2. 流程数据库
-      workflow:
-        jdbc-url: jdbc:mysql://localhost:3306/activiti_workflow?characterEncoding=utf8&useSSL=false
-        username: activiti_workflow
-        password: activiti_workflow
-        driver-class-name: com.mysql.cj.jdbc.Driver
-
----
-# Activiti 相关配置
-spring:
   activiti:
     # 自动检查并更新数据库表结构（第一次运行会自动创建25张表）
     database-schema-update: true
@@ -34,14 +20,20 @@ spring:
     # 自动部署流程定义文件的目录
     process-definition-location-prefix: classpath:/processes/
 
-# MyBatis Plus 配置
+# MyBatis-Plus 配置
 mybatis-plus:
-  mapper-locations: classpath:/mapper/*.xml
-  type-aliases-package: com.chenbitao.business.entity
-#mybatis:
-#  mapper-locations: classpath:mapper/*.xml
-#  type-aliases-package: com.chenbitao.activit_in_action.model
----
+  configuration:
+    # 打印 SQL 日志，方便调试
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true  # 开启驼峰命名自动转换
+  global-config:
+    db-config:
+      # 逻辑删除配置
+      logic-delete-field: deleted  # 全局逻辑删除的实体字段名
+      logic-delete-value: 1        # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0    # 逻辑未删除值(默认为 0)
+      id-type: auto               # 主键ID自增
+
 # 开启详细日志打印
 logging:
   level:
@@ -53,11 +45,3 @@ logging:
     # 打印 MyBatis 执行的 SQL 语句
     com.chenbitao: DEBUG
     org.mybatis: DEBUG
----
-spring:
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
-      - org.activiti.spring.boot.SecurityAutoConfiguration
-      - org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration
